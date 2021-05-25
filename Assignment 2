@@ -30,21 +30,27 @@ survey_data <- read_csv("ces2019-phone_clean.csv")
 
 ## Introduction
 
-<Here you should have a few paragraphs of text introducing the problem, getting the reader interested/ready for the rest of the report.>
+The intention of this report is to analyze voting results from 2019 in order to draw conclusions about the voting population in Canada. These findings will then be used to predict likely outcomes of the 2023 federal election in Canada. The data used in this report is from the 2019 Canadian Election Study Phone Survey (Stephenson et al. 2020) which we abbreviate to 'the CES data'. Given that the liberal party won the federal election in 2019 (CBC News 2019), we decided to investigate into some possible variables which may have affected votes towards said party. We specifically looked at the effect of education attainment on the probability of an Ontario resident voting for the liberals. 
 
-<Introduce terminology.>
+**Politics in Canada**
 
-<Highlight hypotheses.>
+Politically Canada functions as a parliamentary democracy with a multi-party system. For a federal election, members of political parties are running to be voted into the House of Commons of Canada to become members of Parliament (MPs). The House of Commons is one of three entities which comprise the Canadian parliament and primarily work to pass legislative bills. Canada is divided into 338 districts which aim to represent the population more accurately than provincial borders. These divisions are called electoral districts. For a member of a political party to be voted in as an MP, they must run as such in their respective electoral district and obtain the largest number of votes from voters living in said district during the federal election period. The prime minister is the leader of the political party with the most number of MPs holding seats in the House of Commons. With this system in place it is possible to have the winning political party not actually represent the total number of individual votes; also called the popular vote. This is called a minority government and this happened in the 2019 federal election. The Conservative party held the popular vote while the Liberal party actually came second by approximately 200,000 votes (see CBC News 2019 and JJ McCullough 2015). This has only happened in 13 elections since 1921.
 
-<Optional: You can also include a description of each section of this report as a last paragraph.>
+**Significance of Canadian Election** 
 
+Canada is one of the most advanced economies in the world and is a member of the Group of Seven (G7). It's the largest trading partner with the United States, a global economic superpower and it is home to 38 million people and is the fourth largest country by land area (Government of Canada, 2015). The voting system in Canada determines who will be overseeing all these important aspects of the country and leading Canada into the future while still representing the views of the people. With so much at stake, the elections are closely watched globally as well as within Canada. Many stakeholders try to understand the mechanics of the process through statistical analysis of a variety of demographics each election period. Our overall research is about trying to understand what may affect the 2023 election, and possibly predict who may win. This is a very broad scope which we narrowed to one specific area for investigation. 
+
+**Hypothesis: Education Attainment as a Predictor of Vote**
+
+One indicator that has recently become significant in predicting voting in the United States is education attainment. One study by the Pew Research Centre (2020) suggests that race and education are two of the biggest indicators of how a person will vote in the United States. They found those without a college degree tend to vote Republican while those with a college degree tend to vote Democrat. Another study of theirs found similar trends in 2018 along with gender. As of 2019, 48% of adult Americans have completed some form of tertiary education whereas in Canada this figure is 60% (OECD data, 2019). In our report we aim to understand if any sort of similar trend can be found in recent Canadian politics by similarly looking at education level affecting voting outcomes. Specifically, our hypothesis is to see if education level affects the probability of an individual living in Ontario voting Liberal. We will be using a multiple linear regression model with post stratification for province to investigate this.
 
 ## Data
 
-Collection Process
+**Collection Process**
 The data used in this report is from the 2019 Canadian Election Study Phone Survey (Stephenson et al. 2020). The data was gathered after the 2019 Canadian federal election from October to November 2019 by Advanis Inc. A Computer-assisted telephone interviewing (CATI) method was used to collect the data. The interviewer follows a script provided by a software application on a computer which they dictate over the phone. Responses are recorded with a keyboard that corresponds to coded responses displayed by the software. The software has been coded to reject illogical answers (e.g. percentage answers that don't sum to 100) and to skip questions that would not be applicable to the respondent given the previous data. Respondents were from all provinces across Canada, and all either Canadian citizens or permanent residents, aged 18 or older. The variables were weighted across provinces for a more accurate depiction of the overall Canadian population. The sample from the study is composed of data taken from the same individuals at two different points in time (also known as two-wave panel data). The first data collection was during the campaign period and the second was after this period. 
 
-<Type here a summary of the cleaning process (**only add in stuff beyond my original gss_cleaning.R code**). You only need to describe additional cleaning that you and your group did.> ]
+**Cleaning the Data**
+The key variables used for this report were isolated from the main CES data to create a subset data that would be used for the analysis. This was done using the R programming language in the software R Studio and its subsequent program package 'tidyverse' that needs to be installed after downloading the R-Studio software. A new variable was created consisting of the subset data. It was defined as the original CES data but only after going through a series of subsequent functions to isolate the variables from the CES data. The 'pipe' function of R-Studio (in R language as %>%) was used to allow different commands to run with the results of subsequent lines of code. Specifically, the function 'mutate' from the tidyverse package was used to create new variable columns for the data subset. It called on the variables needed from the CES data one by one and used the 'ifelse' statement to select certain multiple choice answers from variables. For example, for the "Who are you likely to vote for?" variable from the CES data  (variable q11), the liberal party responses were isolated by this method. Each selected multiple choice answer was saved as its own respective variable. For the education variables, more than one of the multiple choice options from the CES data variable q61 were combined in a similar process to form the four dummy variables for education so that we could concisely represent different education levels. Any skipped, refused or uncertain data points were deleted from our data set.
 
 ```{r, include = FALSE}
 
@@ -73,7 +79,8 @@ census_data <- census_data %>%
 
 <Remember, you may want to use multiple datasets here, if you do end up using multiple data sets, or merging the data, be sure to describe this in the cleaning process and be sure to discuss important aspects of all the data that you used.>
 
-<Include a description of the important variables.> 
+**Dependent Variable**
+The key variable in this report are respondents categorical answers to which party they are likely to vote for (corresponding to variable q11 encoded in CES data). This should be a fairly accurate measure of which political parties people were tending to at the time. Although it is important to note the possibility of some respondents changing their minds later or that they may not be entirely truthful in the survey. Respondents were asked "If you decide to vote, which party do you think you will vote for?" and had thirteen different possible answers to choose from: "Don't know/Undecided", "Refused", "Skipped", "Liberal (Grits)", "Conservatives (Tory, PCs, Conservative Party of Canada)", "NDP (New Democratic Party, New Democrats, NDPers)", "Bloc Québécois (BQ, PQ, Bloc, Parti Québécois)", "Green Party (Greens)", "People's Party", "Other", "Will not vote", "None of these", "Will spoil ballet". The liberal party vote was isolated and encoded into our data set as a dummy variable with an individual being encoded as '1' for voting liberal and '0' for any of the other twelve options.
 
 ```{r, include=FALSE}
 
@@ -205,8 +212,4 @@ census_data_counts %>%
 
 ## Bibliography
 
-1. Grolemund, G. (2014, July 16) *Introduction to R Markdown*. RStudio. [https://rmarkdown.rstudio.com/articles_intro.html](https://rmarkdown.rstudio.com/articles_intro.html). (Last Accessed: January 15, 2021) 
 
-2. Dekking, F. M., et al. (2005) *A Modern Introduction to Probability and Statistics: Understanding why and how.* Springer Science & Business Media.
-
-3.  Allaire, J.J., et. el. *References: Introduction to R Markdown*. RStudio. [https://rmarkdown.rstudio.com/docs/](https://rmarkdown.rstudio.com/docs/). (Last Accessed: January 15, 2021) 
